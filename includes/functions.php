@@ -276,6 +276,40 @@ function h($str) {
     return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+// Generate and send OTP
+function sendOtpEmail($conn, $email) {
+    $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+    $stmt = $conn->prepare("UPDATE users SET otp_code = ?, otp_expiry = ? WHERE email = ?");
+    $stmt->bind_param("sss", $otp, $expiry, $email);
+    $stmt->execute();
+
+    // In production, send via PHPMailer/SMTP.
+    // For local demo, store in session to display.
+    $_SESSION['otp_demo'] = $otp;
+    $_SESSION['otp_email'] = $email;
+
+    // mail($email, "Your OTP Code", "Your OTP is: $otp. Valid for 10 minutes.");
+    return true;
+}
+
+// Verify OTP
+function verifyOtp($conn, $email, $otp) {
+    $stmt = $conn->prepare("SELECT otp_code, otp_expiry FROM users WHERE email = ? AND is_verified = 0");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+
+    if (!$user) return false;
+    if ($user['otp_code'] !== $otp) return false;
+    if (strtotime($user['otp_expiry']) < time()) return false;
+
+    $stmt = $conn->prepare("UPDATE users SET is_verified = 1, otp_code = NULL, otp_expiry = NULL WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    return $stmt->execute();
+}
+
 // Upload image
 function uploadImage($file, $target_dir, $default = 'default.png') {
     if ($file['error'] !== UPLOAD_ERR_OK) return $default;

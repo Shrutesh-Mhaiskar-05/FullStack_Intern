@@ -6,6 +6,7 @@ A full-stack web application built with PHP, MySQL, Bootstrap 5, and JavaScript.
 
 ### 🔐 Authentication
 - User Registration with validation
+- **Email OTP Verification** during registration (6-digit OTP, 10-min expiry)
 - Secure Login with password hashing (`password_hash`)
 - Role-based access (Admin / User)
 - Forgot Password / Reset Password flow
@@ -13,16 +14,18 @@ A full-stack web application built with PHP, MySQL, Bootstrap 5, and JavaScript.
 - Logout
 
 ### 👑 Admin Panel
-- Analytics Dashboard with Chart.js visualizations
+- Analytics Dashboard with **5 Chart.js charts**
   - Total Users, Books, Orders, Revenue stat cards
   - Orders & Revenue bar/line chart (last 7 days)
   - Books by Category doughnut chart
+  - New User Registrations line chart (last 7 days)
+  - Order Status Distribution pie chart
   - Active Users (new this month)
   - Pending Orders count
   - Low Stock alerts
 - Manage Books (CRUD with image upload, discount, rating)
 - Manage Categories (CRUD)
-- Manage Users (CRUD, role toggle, active period filter)
+- Manage Users (CRUD, role toggle, active period filter for 7/30/90 days)
 - Manage Orders (CRUD, status updates)
 - Search, filter, and pagination on all tables
 
@@ -35,6 +38,7 @@ A full-stack web application built with PHP, MySQL, Bootstrap 5, and JavaScript.
 - Profile management with picture upload
 
 ### 🛒 Shopping Features
+- **AJAX real-time search** (debounced, no page reload)
 - Search by title or author
 - Filter by category
 - Price range filter
@@ -204,3 +208,20 @@ online_bookstore/
 ## 📄 License
 
 This project is open-source and available for educational purposes.
+
+## 📋 Version History
+
+### v2.0.0 — Task 5 Capstone Enhancements
+- Email OTP verification during registration (`verify_otp.php`)
+- AJAX real-time search & filtering (`search_ajax.php`)
+- Enhanced Chart.js analytics (5 charts: Orders/Day, Revenue, User Registrations, Category & Status distribution)
+- User registration trend chart on admin dashboard
+- Order status distribution pie chart
+- Active user period filter (7/30/90 days) in user management
+- Deployment configuration (`.htaccess`, `DEPLOYMENT.md`)
+- Comprehensive project report (`docs/project_report.html`)
+
+### v1.0.0 — Task 4 Base Features
+- Authentication, Admin Panel, CRUD, Cart, Checkout
+- Discounts, Ratings, Wishlist, Quick View
+- Book cover generation, ₹ pricing

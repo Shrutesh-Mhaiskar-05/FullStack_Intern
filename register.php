@@ -49,11 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password, phone, address) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password, phone, address, is_verified) VALUES (?, ?, ?, ?, ?, 0)");
         $stmt->bind_param("sssss", $username, $email, $hashed_password, $phone, $address);
         
         if ($stmt->execute()) {
-            redirect('login.php', 'Registration successful! Please login.', 'success');
+            // Send OTP for email verification
+            sendOtpEmail($conn, $email);
+            $_SESSION['otp_email'] = $email;
+            redirect("verify_otp.php?email=" . urlencode($email), 'Registration successful! Please verify your email.', 'info');
         } else {
             $errors[] = 'Registration failed. Please try again.';
         }

@@ -1,7 +1,7 @@
 <?php
-require_once dirname(__DIR__) . '/includes/config.php';
-require_once dirname(__DIR__) . '/includes/functions.php';
-require_once dirname(__DIR__) . '/includes/auth_check.php';
+require_once dirname(__DIR__, 2) . '/includes/config.php';
+require_once dirname(__DIR__, 2) . '/includes/functions.php';
+require_once dirname(__DIR__, 2) . '/includes/auth_check.php';
 requireAdmin();
 
 $page_title = $page_title ?? 'Admin Dashboard';

@@ -105,28 +105,16 @@ require_once 'includes/header.php';
     <!-- Books Grid -->
     <div class="col-lg-9">
         <!-- Results Bar -->
-        <div class="results-bar shadow-sm">
-            <div>
+        <div class="results-bar shadow-sm" id="resultsBar">
+            <div id="resultCount">
                 <span class="fw-medium"><?php echo $data['total']; ?></span> book<?php echo $data['total'] !== 1 ? 's' : ''; ?> found
                 <?php if (!empty($search)): ?>
                 <span class="text-muted">for "<strong><?php echo h($search); ?></strong>"</span>
                 <?php endif; ?>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <?php if (!empty($search) || !empty($category_id) || !empty($min_price) || !empty($max_price)): ?>
-                <div class="filter-tags d-none d-md-flex">
-                    <?php if (!empty($search)): ?>
-                    <span class="filter-tag"><?php echo h($search); ?> <a href="?<?php echo http_build_query(array_diff_key($_GET, ['search' => ''])); ?>" class="remove text-decoration-none">&times;</a></span>
-                    <?php endif; ?>
-                </div>
-                <?php endif; ?>
                 <form method="GET" action="shop.php" class="m-0">
-                    <?php foreach ($_GET as $k => $v): ?>
-                        <?php if ($k !== 'sort' && $k !== 'page'): ?>
-                        <input type="hidden" name="<?php echo h($k); ?>" value="<?php echo h($v); ?>">
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    <select name="sort" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                    <select name="sort" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()" id="ajaxSort">
                         <option value="newest" <?php echo $sort == 'newest' ? 'selected' : ''; ?>>Newest</option>
                         <option value="price_asc" <?php echo $sort == 'price_asc' ? 'selected' : ''; ?>>Price: Low-High</option>
                         <option value="price_desc" <?php echo $sort == 'price_desc' ? 'selected' : ''; ?>>Price: High-Low</option>
@@ -136,90 +124,111 @@ require_once 'includes/header.php';
             </div>
         </div>
 
-        <?php if ($data['books']->num_rows > 0): ?>
-        <div class="row g-4">
-            <?php while ($book = $data['books']->fetch_assoc()): 
-                $discounted_price = getDiscountedPrice($book['price'], $book['discount']);
-                $in_wishlist = isLoggedIn() ? isInWishlist($conn, $_SESSION['user_id'], $book['id']) : false;
-            ?>
-            <div class="col-6 col-md-4 col-xl-3">
-                <div class="card h-100 border-0 shadow-sm book-card">
-                    <div class="card-img-wrapper">
-                        <?php echo renderDiscountBadge($book['discount']); ?>
-                        
-                        <?php if (isLoggedIn()): ?>
-                        <button class="favorite-btn <?php echo $in_wishlist ? 'active' : ''; ?>" 
-                                data-book-id="<?php echo $book['id']; ?>"
-                                onclick="toggleWishlist(this, <?php echo $book['id']; ?>)">
-                            <i class="bi <?php echo $in_wishlist ? 'bi-heart-fill' : 'bi-heart'; ?>"></i>
-                        </button>
-                        <?php endif; ?>
-
-                        <img src="assets/images/<?php echo h($book['image']); ?>" 
-                             class="card-img-top" 
-                             alt="<?php echo h($book['title']); ?>"
-                             onerror="this.src='assets/images/default-book.png'">
-                        
-                        <button class="btn btn-dark btn-sm quick-view-btn" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#quickViewModal"
-                                onclick="loadQuickView(<?php echo $book['id']; ?>)">
-                            <i class="bi bi-eye me-1"></i> Quick View
-                        </button>
-                    </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <div class="mb-2">
-                            <?php if ($book['rating']): ?>
-                                <?php echo renderStars($book['rating']); ?>
+        <div id="booksGrid" class="row g-4">
+            <?php if ($data['books']->num_rows > 0): ?>
+                <?php while ($book = $data['books']->fetch_assoc()): 
+                    $discounted_price = getDiscountedPrice($book['price'], $book['discount']);
+                    $in_wishlist = isLoggedIn() ? isInWishlist($conn, $_SESSION['user_id'], $book['id']) : false;
+                ?>
+                <div class="col-6 col-md-4 col-xl-3">
+                    <div class="card h-100 border-0 shadow-sm book-card">
+                        <div class="card-img-wrapper">
+                            <?php echo renderDiscountBadge($book['discount']); ?>
+                            <?php if (isLoggedIn()): ?>
+                            <button class="favorite-btn <?php echo $in_wishlist ? 'active' : ''; ?>" data-book-id="<?php echo $book['id']; ?>" onclick="toggleWishlist(this, <?php echo $book['id']; ?>)"><i class="bi <?php echo $in_wishlist ? 'bi-heart-fill' : 'bi-heart'; ?>"></i></button>
                             <?php endif; ?>
+                            <img src="assets/images/<?php echo h($book['image']); ?>" class="card-img-top" alt="<?php echo h($book['title']); ?>" onerror="this.src='assets/images/default-book.png'">
+                            <button class="btn btn-dark btn-sm quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" onclick="loadQuickView(<?php echo $book['id']; ?>)"><i class="bi bi-eye me-1"></i> Quick View</button>
                         </div>
-                        <h6 class="card-title text-truncate fw-semibold mb-1"><?php echo h($book['title']); ?></h6>
-                        <p class="card-text text-muted small mb-2">by <?php echo h($book['author']); ?></p>
-                        <div class="mb-2">
-                            <?php echo renderAvailabilityBadge($book['stock']); ?>
-                        </div>
-                        <div class="mt-auto">
-                            <div class="book-price mb-2">
-                                <?php if ($book['discount'] > 0): ?>
-                                    <span class="original"><?php echo formatPrice($book['price']); ?></span>
-                                    <span class="discounted"><?php echo formatPrice($discounted_price); ?></span>
-                                <?php else: ?>
-                                    <span class="discounted"><?php echo formatPrice($book['price']); ?></span>
-                                <?php endif; ?>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">
-                                    <i class="bi bi-info-circle me-1"></i> Details
-                                </a>
-                                <?php if ($book['stock'] > 0): ?>
-                                <a href="cart_add.php?id=<?php echo $book['id']; ?>" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-cart-plus"></i>
-                                </a>
-                                <?php endif; ?>
+                        <div class="card-body d-flex flex-column p-3">
+                            <div class="mb-2"><?php if ($book['rating']) echo renderStars($book['rating']); ?></div>
+                            <h6 class="card-title text-truncate fw-semibold mb-1"><?php echo h($book['title']); ?></h6>
+                            <p class="card-text text-muted small mb-2">by <?php echo h($book['author']); ?></p>
+                            <div class="mb-2"><?php echo renderAvailabilityBadge($book['stock']); ?></div>
+                            <div class="mt-auto">
+                                <div class="book-price mb-2">
+                                    <?php if ($book['discount'] > 0): ?>
+                                        <span class="original"><?php echo formatPrice($book['price']); ?></span>
+                                        <span class="discounted"><?php echo formatPrice($discounted_price); ?></span>
+                                    <?php else: ?>
+                                        <span class="discounted"><?php echo formatPrice($book['price']); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">Details</a>
+                                    <?php if ($book['stock'] > 0): ?>
+                                    <a href="cart_add.php?id=<?php echo $book['id']; ?>" class="btn btn-primary btn-sm"><i class="bi bi-cart-plus"></i></a>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <?php endwhile; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <div class="col-12">
+                    <div class="empty-state"><i class="bi bi-search"></i><h5 class="mt-3">No books found</h5><p class="text-muted">Try adjusting your filters or search terms.</p><a href="shop.php" class="btn btn-primary mt-2">View All Books</a></div>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <?php 
-        $query_string = $_GET;
-        $query_string['page'] = '{page}';
-        $url_pattern = 'shop.php?' . http_build_query($query_string);
-        echo '<div class="mt-4">' . paginationLinks($data['current_page'], $data['pages'], $url_pattern) . '</div>';
-        ?>
-        <?php else: ?>
-        <div class="empty-state">
-            <i class="bi bi-search"></i>
-            <h5 class="mt-3">No books found</h5>
-            <p class="text-muted">Try adjusting your filters or search terms.</p>
-            <a href="shop.php" class="btn btn-primary mt-2">View All Books</a>
+        <div id="paginationWrap" class="mt-4">
+            <?php 
+            $query_string = $_GET;
+            $query_string['page'] = '{page}';
+            $url_pattern = 'shop.php?' . http_build_query($query_string);
+            echo paginationLinks($data['current_page'], $data['pages'], $url_pattern);
+            ?>
         </div>
-        <?php endif; ?>
     </div>
 </div>
+
+<!-- AJAX Search Script -->
+<script>
+let searchTimeout;
+const searchInput = document.querySelector('input[name="search"]');
+const filterForm = document.getElementById('filterForm');
+
+function ajaxSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        const form = document.getElementById('filterForm');
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        params.set('page', '1');
+
+        fetch('search_ajax.php?' + params.toString())
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('booksGrid').innerHTML = data.html;
+                document.getElementById('paginationWrap').innerHTML = data.pagination;
+                document.getElementById('resultCount').innerHTML = '<span class="fw-medium">' + data.total + '</span> books found';
+            });
+    }, 400);
+}
+
+if (searchInput) {
+    searchInput.addEventListener('input', ajaxSearch);
+}
+
+// Category pills AJAX
+document.querySelectorAll('.category-pill').forEach(pill => {
+    pill.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = new URL(this.href);
+        document.querySelector('select[name="category"]').value = url.searchParams.get('category') || '';
+        ajaxSearch();
+        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Sort AJAX
+document.getElementById('ajaxSort')?.addEventListener('change', function() {
+    document.querySelector('select[name="sort"]').value = this.value;
+    ajaxSearch();
+});
+</script>
 
 <!-- Quick View Modal -->
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">

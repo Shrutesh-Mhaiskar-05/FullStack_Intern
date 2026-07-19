@@ -45,6 +45,34 @@ for ($i = 6; $i >= 0; $i--) {
 // Category distribution
 $cat_dist = $conn->query("SELECT c.name, COUNT(b.id) as count FROM categories c LEFT JOIN books b ON c.id = b.category_id GROUP BY c.id ORDER BY count DESC");
 
+// User registrations per day (last 7 days)
+$user_chart = $conn->query("
+    SELECT DATE(created_at) as day, COUNT(*) as count
+    FROM users 
+    WHERE created_at >= NOW() - INTERVAL 7 DAY
+    GROUP BY DATE(created_at)
+    ORDER BY day ASC
+");
+$user_labels = []; $user_counts = [];
+for ($i = 6; $i >= 0; $i--) {
+    $date = date('Y-m-d', strtotime("-$i days"));
+    $user_labels[] = date('D', strtotime($date));
+    $found = false;
+    $user_chart->data_seek(0);
+    while ($row = $user_chart->fetch_assoc()) {
+        if ($row['day'] === $date) { $user_counts[] = (int)$row['count']; $found = true; break; }
+    }
+    if (!$found) $user_counts[] = 0;
+}
+
+// Order status distribution
+$status_dist = $conn->query("SELECT status, COUNT(*) as count FROM orders GROUP BY status");
+$status_labels = []; $status_counts = [];
+while ($row = $status_dist->fetch_assoc()) {
+    $status_labels[] = ucfirst($row['status']);
+    $status_counts[] = (int)$row['count'];
+}
+
 // Recent orders
 $recent_orders = $conn->query("SELECT o.*, u.username FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.order_date DESC LIMIT 5");
 
@@ -136,6 +164,26 @@ $recent_users = $conn->query("SELECT * FROM users ORDER BY created_at DESC LIMIT
             </div>
             <div class="card-body">
                 <canvas id="categoryChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Second Row: User Registrations & Order Status -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold"><i class="bi bi-people me-2"></i>New User Registrations (Last 7 Days)</div>
+            <div class="card-body">
+                <canvas id="userChart" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold"><i class="bi bi-pie-chart me-2"></i>Order Status Distribution</div>
+            <div class="card-body">
+                <canvas id="statusChart" height="180"></canvas>
             </div>
         </div>
     </div>
@@ -253,6 +301,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
                 x: { grid: { display: false } }
             }
+        }
+    });
+
+    // User Registrations Chart
+    new Chart(document.getElementById('userChart'), {
+        type: 'line',
+        data: {
+            labels: <?php echo json_encode($user_labels); ?>,
+            datasets: [{
+                label: 'New Users',
+                data: <?php echo json_encode($user_counts); ?>,
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#6f42c1',
+                pointRadius: 4,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } }
+        }
+    });
+
+    // Order Status Pie Chart
+    new Chart(document.getElementById('statusChart'), {
+        type: 'pie',
+        data: {
+            labels: <?php echo json_encode($status_labels); ?>,
+            datasets: [{
+                data: <?php echo json_encode($status_counts); ?>,
+                backgroundColor: ['#ffc107', '#0dcaf0', '#0d6efd', '#198754', '#dc3545'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { boxWidth: 12, padding: 10 } } }
         }
     });
 

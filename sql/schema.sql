@@ -29,6 +29,9 @@ CREATE TABLE `users` (
   `role_id` INT NOT NULL DEFAULT 2,
   `reset_token` VARCHAR(255) DEFAULT NULL,
   `reset_token_expiry` DATETIME DEFAULT NULL,
+  `otp_code` VARCHAR(6) DEFAULT NULL,
+  `otp_expiry` DATETIME DEFAULT NULL,
+  `is_verified` TINYINT(1) DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -148,8 +151,8 @@ CREATE TABLE `order_items` (
 INSERT INTO `roles` (`role_name`) VALUES ('admin'), ('user');
 
 -- Default admin: admin@bookstore.com / Admin@123
-INSERT INTO `users` (`username`, `email`, `password`, `role_id`) VALUES
-('Administrator', 'admin@bookstore.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1);
+INSERT INTO `users` (`username`, `email`, `password`, `role_id`, `is_verified`) VALUES
+('Administrator', 'admin@bookstore.com', '$2y$10$wkEMMZimCMmklSPauvnlvuakys9Or6ESiPWVijAAu5ro2QyN8/RAq', 1, 1);
 
 INSERT INTO `categories` (`name`, `description`) VALUES
 ('Fiction', 'Fictional books and novels'),

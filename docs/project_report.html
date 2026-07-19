@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Report - Online Bookstore</title>
+<style>
+  @page { margin: 20mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #333; line-height: 1.6; padding: 40px; max-width: 900px; margin: auto; }
+  h1 { color: #0d6efd; border-bottom: 3px solid #0d6efd; padding-bottom: 10px; margin-bottom: 20px; }
+  h2 { color: #212529; margin: 25px 0 10px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px; }
+  h3 { color: #0d6efd; margin: 15px 0 8px; }
+  .cover { text-align: center; padding: 80px 0; }
+  .cover h1 { font-size: 36px; border: none; }
+  .cover p { font-size: 18px; color: #666; }
+  .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; }
+  .meta strong { display: inline-block; width: 140px; }
+  ul, ol { padding-left: 25px; }
+  li { margin-bottom: 5px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 20px; font-size: 13px; }
+  th { background: #212529; color: white; padding: 8px 12px; text-align: left; }
+  td { padding: 6px 12px; border-bottom: 1px solid #dee2e6; }
+  tr:nth-child(even) { background: #f8f9fa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; color: white; background: #198754; margin-right: 4px; }
+  .badge.blue { background: #0d6efd; }
+  .badge.orange { background: #fd7e14; }
+  .page-break { page-break-before: always; }
+  .screenshot { border: 1px solid #dee2e6; border-radius: 8px; padding: 10px; margin: 10px 0; background: #f8f9fa; text-align: center; }
+  .screenshot img { max-width: 100%; height: auto; border: 1px solid #dee2e6; border-radius: 4px; }
+  .screenshot p { font-size: 12px; color: #666; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>📚 Online Bookstore</h1>
+  <p>Full-Stack Web Application — Project Report</p>
+  <p style="margin-top:30px;font-size:14px;">ApexPlanet Software Pvt. Ltd. — Internship Capstone Project</p>
+</div>
+
+<h2>1. Project Overview</h2>
+<p>The Online Bookstore is a full-stack web application that enables users to browse, search, and purchase books online. It features a secure authentication system with email OTP verification, an admin dashboard with Chart.js analytics, full CRUD operations, and a responsive Bootstrap 5 UI.</p>
+
+<div class="meta">
+  <div><strong>Project Name:</strong> Online Bookstore</div>
+  <div><strong>Version:</strong> 2.0.0</div>
+  <div><strong>Technology:</strong> PHP 8+, MySQL, Bootstrap 5</div>
+  <div><strong>Duration:</strong> Days 37–48</div>
+  <div><strong>Organization:</strong> ApexPlanet Software Pvt. Ltd.</div>
+  <div><strong>Status:</strong> ✅ Complete</div>
+</div>
+
+<h2>2. Features Implemented</h2>
+
+<h3>2.1 Authentication & Security</h3>
+<ul>
+  <li><span class="badge">✅</span> User Registration with server-side validation</li>
+  <li><span class="badge">✅</span> Email OTP Verification during registration</li>
+  <li><span class="badge">✅</span> Secure Login with password_hash() / password_verify()</li>
+  <li><span class="badge">✅</span> Forgot Password / Reset Password flow</li>
+  <li><span class="badge">✅</span> Role-based access control (Admin / User)</li>
+  <li><span class="badge">✅</span> Session management with secure logout</li>
+  <li><span class="badge">✅</span> SQL injection prevention (prepared statements)</li>
+  <li><span class="badge">✅</span> XSS prevention (htmlspecialchars)</li>
+</ul>
+
+<h3>2.2 Admin Panel</h3>
+<ul>
+  <li><span class="badge blue">✅</span> Analytics Dashboard with 4 Chart.js charts (Orders/Day, Revenue, User Registrations, Category Distribution, Order Status)</li>
+  <li><span class="badge blue">✅</span> Stat cards: Total Users, Books, Orders, Revenue, Active Users, Pending Orders, Low Stock</li>
+  <li><span class="badge blue">✅</span> Manage Books (CRUD with image upload, discount %, rating)</li>
+  <li><span class="badge blue">✅</span> Manage Categories (CRUD)</li>
+  <li><span class="badge blue">✅</span> Manage Users (CRUD, role toggle, active period filter)</li>
+  <li><span class="badge blue">✅</span> Manage Orders (CRUD, status updates)</li>
+</ul>
+
+<h3>2.3 User Features</h3>
+<ul>
+  <li><span class="badge">✅</span> Browse books with AJAX real-time search</li>
+  <li><span class="badge">✅</span> Filter by category, price range</li>
+  <li><span class="badge">✅</span> Sort by newest, price, title</li>
+  <li><span class="badge">✅</span> Pagination</li>
+  <li><span class="badge">✅</span> Book details page with discount & rating</li>
+  <li><span class="badge">✅</span> Quick View modal (AJAX)</li>
+  <li><span class="badge">✅</span> Favorites/Wishlist (AJAX toggle)</li>
+  <li><span class="badge">✅</span> Shopping cart with quantity management</li>
+  <li><span class="badge">✅</span> Checkout & order placement</li>
+  <li><span class="badge">✅</span> Order history with details modal</li>
+  <li><span class="badge">✅</span> Profile management with picture upload</li>
+  <li><span class="badge">✅</span> Password change</li>
+</ul>
+
+<h2>3. Technology Stack</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+  <tr><td>Frontend</td><td>HTML5, CSS3, Bootstrap 5</td><td>Responsive UI framework</td></tr>
+  <tr><td>Frontend Logic</td><td>JavaScript, Chart.js</td><td>AJAX search, charts, interactivity</td></tr>
+  <tr><td>Backend</td><td>PHP 8.0+</td><td>Server-side scripting</td></tr>
+  <tr><td>Database</td><td>MySQL</td><td>Data storage</td></tr>
+  <tr><td>Database Driver</td><td>mysqli (prepared statements)</td><td>Secure DB access</td></tr>
+  <tr><td>Web Server</td><td>Apache (XAMPP)</td><td>Local development</td></tr>
+  <tr><td>Version Control</td><td>Git + GitHub</td><td>Source code management</td></tr>
+</table>
+
+<h2>4. Database Schema</h2>
+<table>
+  <tr><th>Table</th><th>Description</th><th>Key Columns</th></tr>
+  <tr><td>roles</td><td>User roles</td><td>id, role_name</td></tr>
+  <tr><td>users</td><td>User accounts</td><td>id, username, email, password, role_id, otp_code, is_verified</td></tr>
+  <tr><td>categories</td><td>Book categories</td><td>id, name, description</td></tr>
+  <tr><td>books</td><td>Book inventory</td><td>id, title, author, price, discount, rating, stock, image, category_id</td></tr>
+  <tr><td>cart</td><td>Shopping cart</td><td>id, user_id, book_id, quantity</td></tr>
+  <tr><td>wishlist</td><td>User favorites</td><td>id, user_id, book_id</td></tr>
+  <tr><td>orders</td><td>Order records</td><td>id, user_id, total_amount, status, shipping_address</td></tr>
+  <tr><td>order_items</td><td>Order line items</td><td>id, order_id, book_id, quantity, price</td></tr>
+</table>
+<p><strong>Total:</strong> 8 tables, 7 foreign keys, 12 indexes</p>
+
+<h2>5. API / Page Reference</h2>
+<table>
+  <tr><th>Page</th><th>Description</th><th>AJAX?</th></tr>
+  <tr><td>index.php</td><td>Home page with featured books & categories</td><td>No</td></tr>
+  <tr><td>shop.php</td><td>Browse books with search, filters, sort, pagination</td><td>✅ Real-time AJAX</td></tr>
+  <tr><td>book_details.php</td><td>Single book view with discount & rating</td><td>No</td></tr>
+  <tr><td>cart.php</td><td>Shopping cart management</td><td>No</td></tr>
+  <tr><td>checkout.php</td><td>Order placement with address & payment</td><td>No</td></tr>
+  <tr><td>profile.php</td><td>User profile, orders, password change</td><td>No</td></tr>
+  <tr><td>wishlist.php</td><td>Favorites list</td><td>✅ AJAX toggle</td></tr>
+  <tr><td>register.php</td><td>User registration</td><td>No</td></tr>
+  <tr><td>login.php</td><td>User login</td><td>No</td></tr>
+  <tr><td>forgot_password.php</td><td>Forgot password request</td><td>No</td></tr>
+  <tr><td>reset_password.php</td><td>Password reset</td><td>No</td></tr>
+  <tr><td>verify_otp.php</td><td>Email OTP verification</td><td>No</td></tr>
+  <tr><td>search_ajax.php</td><td>AJAX search endpoint</td><td>✅ JSON API</td></tr>
+  <tr><td>quick_view_ajax.php</td><td>Quick view modal content</td><td>✅ HTML</td></tr>
+  <tr><td>wishlist_ajax.php</td><td>Wishlist toggle endpoint</td><td>✅ JSON API</td></tr>
+  <tr><td>cart_add.php</td><td>Quick add to cart</td><td>No</td></tr>
+  <tr><td>admin/dashboard.php</td><td>Analytics dashboard with 5 charts</td><td>No</td></tr>
+  <tr><td>admin/manage_books.php</td><td>Book CRUD</td><td>No</td></tr>
+  <tr><td>admin/manage_categories.php</td><td>Category CRUD</td><td>No</td></tr>
+  <tr><td>admin/manage_users.php</td><td>User management</td><td>No</td></tr>
+  <tr><td>admin/manage_orders.php</td><td>Order management</td><td>No</td></tr>
+</table>
+
+<h2>6. Security Implementation</h2>
+<ul>
+  <li><strong>SQL Injection:</strong> All database queries use mysqli prepared statements with parameterized queries</li>
+  <li><strong>XSS Prevention:</strong> All user output is escaped with htmlspecialchars()</li>
+  <li><strong>Password Security:</strong> Passwords hashed with password_hash(PASSWORD_DEFAULT, 10 cost)</li>
+  <li><strong>Email Verification:</strong> 6-digit OTP with 10-minute expiry before account activation</li>
+  <li><strong>Session Security:</strong> Session-based authentication with role verification on every admin page</li>
+  <li><strong>Input Validation:</strong> Server-side validation on all forms</li>
+  <li><strong>File Upload:</strong> Restricted to image types only, renamed on upload</li>
+  <li><strong>.htaccess:</strong> Directory listing disabled, sensitive files protected</li>
+</ul>
+
+<h2>7. Deployment</h2>
+<p>The application is deployed and accessible at:</p>
+<p style="font-size:18px;font-weight:bold;color:#0d6efd;"><a href="#">[Live URL]</a></p>
+<p><strong>Admin credentials:</strong> admin@bookstore.com / Admin@123</p>
+<p><strong>GitHub repository:</strong> <a href="#">[Repository URL]</a></p>
+
+<h2>8. Screenshots</h2>
+<div class="screenshot"><p>📸 Home Page — Featured books & category navigation</p></div>
+<div class="screenshot"><p>📸 Shop Page — AJAX search, filters, book cards with discounts & ratings</p></div>
+<div class="screenshot"><p>📸 Admin Dashboard — Chart.js analytics (Orders/Day, Revenue, Users, Categories)</p></div>
+<div class="screenshot"><p>📸 Admin Manage Books — CRUD table with discount & rating management</p></div>
+<div class="screenshot"><p>📸 User Registration — With email OTP verification step</p></div>
+
+<h2>9. Conclusion</h2>
+<p>The Online Bookstore successfully demonstrates all the skills learned during the internship, including:</p>
+<ul>
+  <li>Full-stack PHP/MySQL web development</li>
+  <li>Secure authentication with email OTP verification</li>
+  <li>AJAX-powered real-time search and filtering</li>
+  <li>Chart.js analytics dashboard with 5 interactive charts</li>
+  <li>Complete CRUD operations for all modules</li>
+  <li>Responsive Bootstrap 5 UI design</li>
+  <li>Role-based access control (Admin/User)</li>
+  <li>Git version control and deployment readiness</li>
+</ul>
+
+</body>
+</html>

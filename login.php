@@ -25,6 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user['password'])) {
+                // Check email verification (skip for admin)
+                if (!$user['is_verified'] && $user['role_name'] !== 'admin') {
+                    sendOtpEmail($conn, $email);
+                    $_SESSION['otp_email'] = $email;
+                    redirect("verify_otp.php?email=" . urlencode($email), 'Please verify your email before logging in.', 'warning');
+                }
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
