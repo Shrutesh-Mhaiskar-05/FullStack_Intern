@@ -35,6 +35,12 @@ $conn->set_charset("utf8mb4");
 // Mail configuration
 require_once __DIR__ . '/mail_config.php';
 
+// Helper functions (must be before auth_check since auth_check uses them)
+require_once __DIR__ . '/functions.php';
+
+// Auth functions (uses functions from functions.php)
+require_once __DIR__ . '/auth_check.php';
+
 // Error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

@@ -28,7 +28,45 @@
             </div>
         </div>
     </footer>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="cartToastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
+    <script>
+    function showToast(message, type) {
+        const toast = document.getElementById('cartToast');
+        const msgEl = document.getElementById('cartToastMessage');
+        msgEl.textContent = message;
+        toast.className = 'toast align-items-center text-white border-0 show';
+        if (type === 'error') toast.className = 'toast align-items-center text-white bg-danger border-0 show';
+        if (type === 'warning') toast.className = 'toast align-items-center text-white bg-warning border-0 show';
+        setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
+    }
+
+    function updateCartBadge(count) {
+        const cartLink = document.querySelector('.navbar a[href="cart.php"]');
+        if (!cartLink) return;
+        let badge = cartLink.querySelector('.badge');
+        if (count > 0) {
+            if (badge) { badge.textContent = count; }
+            else {
+                badge = document.createElement('span');
+                badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+                badge.textContent = count;
+                cartLink.style.position = 'relative';
+                cartLink.appendChild(badge);
+            }
+        } else { if (badge) badge.remove(); }
+    }
+    </script>
 </body>
 </html>

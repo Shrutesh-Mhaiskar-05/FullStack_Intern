@@ -290,7 +290,6 @@ function sendOtpEmail($conn, $email) {
     $stmt->bind_param("sss", $otp, $expiry, $email);
     $stmt->execute();
 
-    $_SESSION['otp_demo'] = $otp;
     $_SESSION['otp_email'] = $email;
     $_SESSION['otp_last_sent'] = time();
 
@@ -314,7 +313,7 @@ function sendOtpEmail($conn, $email) {
 
     $sent = sendMail($email, $subject, $body);
     if (!$sent && !empty(SMTP_USER)) {
-        error_log("OTP email failed to send to $email. Using demo fallback.");
+        error_log("OTP email failed to send to $email.");
     }
 
     return true;

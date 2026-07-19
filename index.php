@@ -77,7 +77,14 @@ require_once 'includes/header.php';
                                 <span class="discounted"><?php echo formatPrice($book['price']); ?></span>
                             <?php endif; ?>
                         </div>
-                        <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                        <div class="d-flex gap-2">
+                            <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">Details</a>
+                            <?php if ($book['stock'] > 0): ?>
+                            <button class="btn btn-primary btn-sm add-to-cart-btn" data-book-id="<?php echo $book['id']; ?>">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,5 +92,25 @@ require_once 'includes/header.php';
         <?php endwhile; ?>
     </div>
 </section>
+
+<script>
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const bookId = this.dataset.bookId;
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        this.disabled = true;
+        fetch('cart_ajax.php?id=' + bookId)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) { showToast('Added to cart!', 'success'); updateCartBadge(data.cart_count); }
+                else if (data.login_required) { window.location.href = 'login.php'; }
+                else { showToast(data.message || 'Failed to add to cart.', 'error'); }
+            })
+            .catch(() => { showToast('Something went wrong.', 'error'); })
+            .finally(() => { this.innerHTML = originalText; this.disabled = false; });
+    });
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

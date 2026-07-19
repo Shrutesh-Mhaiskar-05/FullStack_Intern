@@ -52,12 +52,15 @@ if ($data['books']->num_rows > 0) {
                                 <span class="discounted"><?php echo formatPrice($book['price']); ?></span>
                             <?php endif; ?>
                         </div>
-                        <div class="d-flex gap-2">
-                            <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">Details</a>
-                            <?php if ($book['stock'] > 0): ?>
-                            <a href="cart_add.php?id=<?php echo $book['id']; ?>" class="btn btn-primary btn-sm"><i class="bi bi-cart-plus"></i></a>
-                            <?php endif; ?>
-                        </div>
+                        <?php if ($book['stock'] > 0): ?>
+                            <button class="btn btn-primary w-100 btn-sm add-to-cart-btn" data-book-id="<?php echo $book['id']; ?>">
+                                <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                            </button>
+                        <?php else: ?>
+                            <button class="btn btn-secondary w-100 btn-sm" disabled>
+                                <i class="bi bi-x-circle me-1"></i> Out of Stock
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

@@ -154,12 +154,15 @@ require_once 'includes/header.php';
                                         <span class="discounted"><?php echo formatPrice($book['price']); ?></span>
                                     <?php endif; ?>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">Details</a>
-                                    <?php if ($book['stock'] > 0): ?>
-                                    <a href="cart_add.php?id=<?php echo $book['id']; ?>" class="btn btn-primary btn-sm"><i class="bi bi-cart-plus"></i></a>
-                                    <?php endif; ?>
-                                </div>
+                                <?php if ($book['stock'] > 0): ?>
+                                <button class="btn btn-primary w-100 btn-sm add-to-cart-btn" data-book-id="<?php echo $book['id']; ?>">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                </button>
+                                <?php else: ?>
+                                <button class="btn btn-secondary w-100 btn-sm" disabled>
+                                    <i class="bi bi-x-circle me-1"></i> Out of Stock
+                                </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -203,6 +206,24 @@ function ajaxSearch() {
                 document.getElementById('booksGrid').innerHTML = data.html;
                 document.getElementById('paginationWrap').innerHTML = data.pagination;
                 document.getElementById('resultCount').innerHTML = '<span class="fw-medium">' + data.total + '</span> books found';
+                // Re-bind add-to-cart buttons
+                document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const bookId = this.dataset.bookId;
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+                        this.disabled = true;
+                        fetch('cart_ajax.php?id=' + bookId)
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.success) { showToast('Added to cart!', 'success'); updateCartBadge(data.cart_count); }
+                                else if (data.login_required) { window.location.href = 'login.php'; }
+                                else { showToast(data.message || 'Failed to add to cart.', 'error'); }
+                            })
+                            .catch(() => { showToast('Something went wrong.', 'error'); })
+                            .finally(() => { this.innerHTML = originalText; this.disabled = false; });
+                    });
+                });
             });
     }, 400);
 }
@@ -253,8 +274,37 @@ document.getElementById('ajaxSort')?.addEventListener('change', function() {
     </div>
 </div>
 
-<!-- Toggle Wishlist Script (inline for quick response) -->
 <script>
+// AJAX Add to Cart
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const bookId = this.dataset.bookId;
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+        this.disabled = true;
+
+        fetch('cart_ajax.php?id=' + bookId)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Added to cart!', 'success');
+                    updateCartBadge(data.cart_count);
+                } else if (data.login_required) {
+                    window.location.href = 'login.php';
+                } else {
+                    showToast(data.message || 'Failed to add to cart.', 'error');
+                }
+            })
+            .catch(() => {
+                showToast('Something went wrong.', 'error');
+            })
+            .finally(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+            });
+    });
+});
+
 function toggleWishlist(btn, bookId) {
     const icon = btn.querySelector('i');
     const wasActive = btn.classList.contains('active');
@@ -269,7 +319,6 @@ function toggleWishlist(btn, bookId) {
                 } else {
                     icon.className = 'bi bi-heart';
                 }
-                // Update header badge
                 const badge = document.querySelector('.navbar a[href="wishlist.php"] .badge');
                 if (badge) {
                     const count = parseInt(badge.textContent) || 0;

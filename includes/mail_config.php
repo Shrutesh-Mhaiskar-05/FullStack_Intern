@@ -24,7 +24,7 @@ define('SMTP_HOST', '');
 define('SMTP_PORT', 587);
 define('SMTP_USER', '');
 define('SMTP_PASS', '');
-define('SMTP_FROM', '');
+define('SMTP_FROM', 'noreply@welcometoonlinebookstore.infinityfree.io');
 define('SMTP_FROM_NAME', 'Online Bookstore');
 
 /**

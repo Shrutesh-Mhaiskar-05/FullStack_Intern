@@ -56,13 +56,35 @@ $discounted_price = getDiscountedPrice($book['price'], $book['discount']);
 
         <div class="d-flex gap-2 flex-wrap">
             <?php if ($book['stock'] > 0): ?>
-            <a href="cart_add.php?id=<?php echo $book['id']; ?>" class="btn btn-primary">
+            <button class="btn btn-primary add-to-cart-btn" data-book-id="<?php echo $book['id']; ?>">
                 <i class="bi bi-cart-plus me-1"></i> Add to Cart
-            </a>
+            </button>
             <?php endif; ?>
             <a href="book_details.php?id=<?php echo $book['id']; ?>" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-right me-1"></i> Full Details
             </a>
         </div>
+        <script>
+        document.querySelector('#quickViewModal .add-to-cart-btn')?.addEventListener('click', function() {
+            const bookId = this.dataset.bookId;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+            this.disabled = true;
+            fetch('cart_ajax.php?id=' + bookId)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) { 
+                        showToast('Added to cart!', 'success');
+                        updateCartBadge(data.cart_count);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('quickViewModal'));
+                        if (modal) modal.hide();
+                    }
+                    else if (data.login_required) { window.location.href = 'login.php'; }
+                    else { showToast(data.message || 'Failed.', 'error'); }
+                })
+                .catch(() => { alert('Something went wrong.'); })
+                .finally(() => { this.innerHTML = originalText; this.disabled = false; });
+        });
+        </script>
     </div>
 </div>

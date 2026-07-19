@@ -64,9 +64,11 @@ require_once 'includes/header.php';
                     </div>
                     <div class="d-flex gap-2">
                         <a href="book_details.php?id=<?php echo $item['book_id']; ?>" class="btn btn-outline-primary btn-sm flex-grow-1">Details</a>
-                        <a href="cart_add.php?id=<?php echo $item['book_id']; ?>" class="btn btn-primary btn-sm">
+                        <?php if ($item['stock'] > 0): ?>
+                        <button class="btn btn-primary btn-sm add-to-cart-btn" data-book-id="<?php echo $item['book_id']; ?>">
                             <i class="bi bi-cart-plus"></i>
-                        </a>
+                        </button>
+                        <?php endif; ?>
                         <a href="wishlist.php?remove=<?php echo $item['book_id']; ?>" class="btn btn-outline-danger btn-sm">
                             <i class="bi bi-trash"></i>
                         </a>
@@ -86,4 +88,23 @@ require_once 'includes/header.php';
 </div>
 <?php endif; ?>
 
+<script>
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const bookId = this.dataset.bookId;
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        this.disabled = true;
+        fetch('cart_ajax.php?id=' + bookId)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) { showToast('Added to cart!', 'success'); updateCartBadge(data.cart_count); }
+                else if (data.login_required) { window.location.href = 'login.php'; }
+                else { showToast(data.message, 'error'); }
+            })
+            .catch(() => { showToast('Something went wrong.', 'error'); })
+            .finally(() => { this.innerHTML = originalText; this.disabled = false; });
+    });
+});
+</script>
 <?php require_once 'includes/footer.php'; ?>
