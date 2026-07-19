@@ -285,12 +285,35 @@ function sendOtpEmail($conn, $email) {
     $stmt->bind_param("sss", $otp, $expiry, $email);
     $stmt->execute();
 
-    // In production, send via PHPMailer/SMTP.
-    // For local demo, store in session to display.
+    // Store in session for development fallback
     $_SESSION['otp_demo'] = $otp;
     $_SESSION['otp_email'] = $email;
 
-    // mail($email, "Your OTP Code", "Your OTP is: $otp. Valid for 10 minutes.");
+    // Try sending real email via SMTP
+    require_once __DIR__ . '/mail_config.php';
+    $subject = 'Your OTP for Online Bookstore Registration';
+    $body = "
+        <div style='font-family:Arial;max-width:480px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;padding:30px'>
+            <div style='text-align:center;margin-bottom:20px'>
+                <h2 style='color:#0d6efd'>📚 Online Bookstore</h2>
+            </div>
+            <h3 style='color:#333'>Email Verification</h3>
+            <p>Your One-Time Password (OTP) for email verification is:</p>
+            <div style='text-align:center;margin:25px 0'>
+                <span style='font-size:32px;font-weight:bold;letter-spacing:8px;color:#0d6efd;background:#f0f4ff;padding:12px 24px;border-radius:8px;display:inline-block'>$otp</span>
+            </div>
+            <p style='color:#666'>This OTP is valid for <strong>10 minutes</strong>.</p>
+            <p style='color:#666'>If you did not request this, please ignore this email.</p>
+            <hr style='border:none;border-top:1px solid #eee;margin:20px 0'>
+            <p style='font-size:12px;color:#999'>Online Bookstore — Your reading journey starts here.</p>
+        </div>
+    ";
+
+    $sent = sendMail($email, $subject, $body);
+    if (!$sent && !empty(SMTP_USER)) {
+        error_log("OTP email failed to send to $email. Using demo fallback.");
+    }
+
     return true;
 }
 

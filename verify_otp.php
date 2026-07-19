@@ -55,10 +55,16 @@ require_once 'includes/header.php';
                     <div class="alert alert-success"><?php echo h($success); ?></div>
                 <?php endif; ?>
 
-                <!-- Demo OTP display (remove in production) -->
-                <?php if (isset($_SESSION['otp_demo']) && $_SESSION['otp_email'] === $email): ?>
+                <!-- Development mode: Show OTP only if SMTP is not configured -->
+                <?php if (isset($_SESSION['otp_demo']) && $_SESSION['otp_email'] === $email && empty(SMTP_USER)): ?>
                 <div class="alert alert-info">
-                    <small>📧 Demo Mode — Your OTP: <strong><?php echo h($_SESSION['otp_demo']); ?></strong></small>
+                    <small>📧 <strong>Development Mode</strong> — OTP sent to <?php echo h($email); ?>: 
+                    <span class="fw-bold fs-5"><?php echo h($_SESSION['otp_demo']); ?></span>
+                    <br><span class="fst-italic">Configure SMTP in <code>includes/mail_config.php</code> to send real emails.</span></small>
+                </div>
+                <?php elseif (isset($_SESSION['otp_demo']) && $_SESSION['otp_email'] === $email && !empty(SMTP_USER)): ?>
+                <div class="alert alert-success">
+                    <small>✅ An OTP has been sent to <strong><?php echo h($email); ?></strong>. Please check your inbox.</small>
                 </div>
                 <?php endif; ?>
 
