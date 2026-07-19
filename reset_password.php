@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL, is_verified = 1 WHERE id = ?");
         $stmt->bind_param("si", $hashed, $user['id']);
         $stmt->execute();
         redirect('login.php', 'Password reset successful! Please login with your new password.', 'success');

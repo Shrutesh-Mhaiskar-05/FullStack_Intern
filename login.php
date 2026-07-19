@@ -27,15 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $user['password'])) {
                 // Check email verification (skip for admin)
                 if (!$user['is_verified'] && $user['role_name'] !== 'admin') {
-                    sendOtpEmail($conn, $email);
+                    // Check if there's still a valid OTP
+                    if (empty($user['otp_code']) || strtotime($user['otp_expiry']) < time()) {
+                        sendOtpEmail($conn, $email);
+                    }
                     $_SESSION['otp_email'] = $email;
                     redirect("verify_otp.php?email=" . urlencode($email), 'Please verify your email before logging in.', 'warning');
                 }
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['role'] = $user['role_name'];
                 $_SESSION['profile_pic'] = $user['profile_pic'];
+                $_SESSION['is_verified'] = $user['is_verified'];
 
                 if ($user['role_name'] === 'admin') {
                     redirect('admin/dashboard.php', 'Welcome back, Admin!', 'success');

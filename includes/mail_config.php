@@ -38,19 +38,16 @@ function sendMail($to, $subject, $body) {
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
 
     try {
-        // Use SMTP if credentials are configured
-        if (!empty(SMTP_USER) && !empty(SMTP_PASS)) {
-            $mail->isSMTP();
-            $mail->Host       = SMTP_HOST;
-            $mail->SMTPAuth   = true;
-            $mail->Username   = SMTP_USER;
-            $mail->Password   = SMTP_PASS;
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = SMTP_PORT;
-        } else {
-            // Fallback to PHP mail() if no SMTP configured
-            $mail->isMail();
+        if (empty(SMTP_USER) || empty(SMTP_PASS)) {
+            return true;
         }
+        $mail->isSMTP();
+        $mail->Host       = SMTP_HOST;
+        $mail->SMTPAuth   = true;
+        $mail->Username   = SMTP_USER;
+        $mail->Password   = SMTP_PASS;
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = SMTP_PORT;
 
         $mail->setFrom(SMTP_FROM ?: 'noreply@bookstore.com', SMTP_FROM_NAME);
         $mail->addAddress($to);

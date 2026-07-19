@@ -7,32 +7,67 @@ if (isLoggedIn()) {
     redirect('index.php');
 }
 
-$email = $_GET['email'] ?? $_SESSION['otp_email'] ?? '';
+$email = $_SESSION['otp_email'] ?? $_GET['email'] ?? '';
 if (empty($email)) {
     redirect('register.php', 'Please register first.', 'warning');
+}
+
+// Validate that the email exists in DB
+$stmt = $conn->prepare("SELECT id, is_verified FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$userRow = $stmt->get_result()->fetch_assoc();
+if (!$userRow) {
+    redirect('register.php', 'Account not found. Please register.', 'warning');
+}
+if ($userRow['is_verified']) {
+    redirect('login.php', 'Email already verified. Please login.', 'info');
 }
 
 $errors = [];
 $success = '';
 
-// Resend OTP
+// Resend OTP (with rate limiting)
 if (isset($_GET['resend'])) {
-    sendOtpEmail($conn, $email);
-    $success = 'A new OTP has been sent.';
+    $result = sendOtpEmail($conn, $email);
+    if ($result === 'wait') {
+        $errors[] = 'Please wait 30 seconds before requesting a new OTP.';
+    } else {
+        $success = 'A new OTP has been sent.';
+    }
 }
 
 // Verify OTP
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $otp = trim($_POST['otp'] ?? '');
 
-    if (empty($otp) || strlen($otp) !== 6) {
-        $errors[] = 'Please enter a valid 6-digit OTP.';
+    if (!preg_match('/^\d{6}$/', $otp)) {
+        $errors[] = 'Please enter a valid 6-digit numeric OTP.';
     } else {
-        if (verifyOtp($conn, $email, $otp)) {
-            unset($_SESSION['otp_demo'], $_SESSION['otp_email']);
+        $result = verifyOtp($conn, $email, $otp);
+        if ($result === 'verified') {
+            unset($_SESSION['otp_demo'], $_SESSION['otp_email'], $_SESSION['otp_last_sent']);
+            // Auto-login after verification
+            $stmt = $conn->prepare("SELECT u.*, r.role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+            if ($user) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role_name'];
+                $_SESSION['profile_pic'] = $user['profile_pic'];
+                $_SESSION['is_verified'] = 1;
+                redirect('index.php', 'Email verified! Welcome to BookStore.', 'success');
+            }
             redirect('login.php', 'Email verified successfully! You can now login.', 'success');
-        } else {
-            $errors[] = 'Invalid or expired OTP. Please try again.';
+        } elseif ($result === 'expired') {
+            $errors[] = 'OTP has expired. Please <a href="?resend=1&email=' . urlencode($email) . '">resend a new OTP</a>.';
+        } elseif ($result === 'wrong') {
+            $errors[] = 'Incorrect OTP. Please try again.';
+        } elseif ($result === 'not_found') {
+            $errors[] = 'No verification request found. Please <a href="?resend=1&email=' . urlencode($email) . '">request a new OTP</a>.';
         }
     }
 }

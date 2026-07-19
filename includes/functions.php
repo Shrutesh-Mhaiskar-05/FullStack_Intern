@@ -278,6 +278,11 @@ function h($str) {
 
 // Generate and send OTP
 function sendOtpEmail($conn, $email) {
+    // Rate limit: check last OTP sent time
+    if (isset($_SESSION['otp_last_sent']) && (time() - $_SESSION['otp_last_sent']) < 30) {
+        return 'wait';
+    }
+
     $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     $expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
@@ -285,12 +290,10 @@ function sendOtpEmail($conn, $email) {
     $stmt->bind_param("sss", $otp, $expiry, $email);
     $stmt->execute();
 
-    // Store in session for development fallback
     $_SESSION['otp_demo'] = $otp;
     $_SESSION['otp_email'] = $email;
+    $_SESSION['otp_last_sent'] = time();
 
-    // Try sending real email via SMTP
-    require_once __DIR__ . '/mail_config.php';
     $subject = 'Your OTP for Online Bookstore Registration';
     $body = "
         <div style='font-family:Arial;max-width:480px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;padding:30px'>
@@ -317,20 +320,29 @@ function sendOtpEmail($conn, $email) {
     return true;
 }
 
-// Verify OTP
 function verifyOtp($conn, $email, $otp) {
     $stmt = $conn->prepare("SELECT otp_code, otp_expiry FROM users WHERE email = ? AND is_verified = 0");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
 
-    if (!$user) return false;
-    if ($user['otp_code'] !== $otp) return false;
-    if (strtotime($user['otp_expiry']) < time()) return false;
+    if (!$user) return 'not_found';
+
+    if ($user['otp_code'] !== $otp) {
+        if (strtotime($user['otp_expiry']) < time()) {
+            return 'expired';
+        }
+        return 'wrong';
+    }
+
+    if (strtotime($user['otp_expiry']) < time()) return 'expired';
 
     $stmt = $conn->prepare("UPDATE users SET is_verified = 1, otp_code = NULL, otp_expiry = NULL WHERE email = ?");
     $stmt->bind_param("s", $email);
-    return $stmt->execute();
+    $stmt->execute();
+
+    session_regenerate_id(true);
+    return 'verified';
 }
 
 // Upload image

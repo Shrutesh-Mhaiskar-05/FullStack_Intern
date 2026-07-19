@@ -24,6 +24,9 @@ if ($conn->connect_error) {
 // Set charset
 $conn->set_charset("utf8mb4");
 
+// Mail configuration
+require_once __DIR__ . '/mail_config.php';
+
 // Error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
