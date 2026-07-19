@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ER Diagram - Online Bookstore</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 40px; }
+        .container { max-width: 1000px; margin: auto; }
+        h1 { text-align: center; color: #0d6efd; margin-bottom: 40px; }
+        .entity { fill: #0d6efd; }
+        .entity text { fill: white; font-size: 14px; font-weight: bold; }
+        .attr text { font-size: 11px; }
+        .attr.pk { font-weight: bold; fill: #dc3545; }
+        .attr.fk { fill: #fd7e14; }
+        .line { stroke: #666; stroke-width: 1.5; fill: none; }
+        .label { font-size: 11px; fill: #666; }
+        .table-box { border: 2px solid #0d6efd; border-radius: 8px; margin-bottom: 30px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .table-box h3 { background: #0d6efd; color: white; margin: 0; padding: 10px 15px; font-size: 16px; }
+        .table-box table { width: 100%; border-collapse: collapse; }
+        .table-box td { padding: 6px 15px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .table-box tr:last-child td { border-bottom: none; }
+        .pk { color: #dc3545; font-weight: bold; }
+        .fk { color: #fd7e14; }
+        .relations { margin-top: 40px; }
+        .relations h2 { color: #0d6efd; }
+        .relations ul { list-style: none; padding: 0; }
+        .relations li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .relations li:before { content: "➤ "; color: #0d6efd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Entity Relationship Diagram</h1>
+        <p style="text-align:center; color:#666; margin-bottom:40px;">Online Bookstore Database Schema</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+            <!-- Users -->
+            <div class="table-box">
+                <h3>users</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id <span class="fk">FK</span> role_id</td></tr>
+                    <tr><td>username (UNIQUE)</td></tr>
+                    <tr><td>email (UNIQUE)</td></tr>
+                    <tr><td>password</td></tr>
+                    <tr><td>phone</td></tr>
+                    <tr><td>address</td></tr>
+                    <tr><td>profile_pic</td></tr>
+                    <tr><td>reset_token</td></tr>
+                    <tr><td>reset_token_expiry</td></tr>
+                    <tr><td>created_at / updated_at</td></tr>
+                </table>
+            </div>
+
+            <!-- Roles -->
+            <div class="table-box">
+                <h3>roles</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id</td></tr>
+                    <tr><td>role_name (UNIQUE)</td></tr>
+                </table>
+            </div>
+
+            <!-- Categories -->
+            <div class="table-box">
+                <h3>categories</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id</td></tr>
+                    <tr><td>name (UNIQUE)</td></tr>
+                    <tr><td>description</td></tr>
+                    <tr><td>created_at</td></tr>
+                </table>
+            </div>
+
+            <!-- Books -->
+            <div class="table-box">
+                <h3>books</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id <span class="fk">FK</span> category_id</td></tr>
+                    <tr><td>title</td></tr>
+                    <tr><td>author</td></tr>
+                    <tr><td>isbn</td></tr>
+                    <tr><td>description</td></tr>
+                    <tr><td>price (DECIMAL 10,2)</td></tr>
+                    <tr><td>stock</td></tr>
+                    <tr><td>image</td></tr>
+                    <tr><td>created_at / updated_at</td></tr>
+                </table>
+            </div>
+
+            <!-- Cart -->
+            <div class="table-box">
+                <h3>cart</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id</td></tr>
+                    <tr><td><span class="fk">FK</span> user_id</td></tr>
+                    <tr><td><span class="fk">FK</span> book_id</td></tr>
+                    <tr><td>quantity</td></tr>
+                    <tr><td>added_at</td></tr>
+                </table>
+            </div>
+
+            <!-- Orders -->
+            <div class="table-box">
+                <h3>orders</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id <span class="fk">FK</span> user_id</td></tr>
+                    <tr><td>total_amount</td></tr>
+                    <tr><td>status (ENUM)</td></tr>
+                    <tr><td>shipping_address</td></tr>
+                    <tr><td>payment_method</td></tr>
+                    <tr><td>order_date / updated_at</td></tr>
+                </table>
+            </div>
+
+            <!-- Order Items -->
+            <div class="table-box">
+                <h3>order_items</h3>
+                <table>
+                    <tr><td><span class="pk">PK</span> id</td></tr>
+                    <tr><td><span class="fk">FK</span> order_id</td></tr>
+                    <tr><td><span class="fk">FK</span> book_id</td></tr>
+                    <tr><td>quantity</td></tr>
+                    <tr><td>price</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="relations">
+            <h2>Relationships</h2>
+            <ul>
+                <li><strong>roles</strong> 1 ──── * <strong>users</strong> (role_id)</li>
+                <li><strong>categories</strong> 1 ──── * <strong>books</strong> (category_id)</li>
+                <li><strong>users</strong> 1 ──── * <strong>cart</strong> (user_id)</li>
+                <li><strong>books</strong> 1 ──── * <strong>cart</strong> (book_id)</li>
+                <li><strong>users</strong> 1 ──── * <strong>orders</strong> (user_id)</li>
+                <li><strong>orders</strong> 1 ──── * <strong>order_items</strong> (order_id)</li>
+                <li><strong>books</strong> 1 ──── * <strong>order_items</strong> (book_id)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

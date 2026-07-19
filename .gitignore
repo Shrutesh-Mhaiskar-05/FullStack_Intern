@@ -1,0 +1,20 @@
+# OS files
+Thumbs.db
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# PHP
+*.cache
+
+# Uploads (keep folder but ignore content)
+uploads/*
+!uploads/.gitkeep
+
+# Placeholder generator
+assets/images/generate_covers.php
+assets/images/placeholder.php

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wireframes - Online Bookstore</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; }
+        .container { max-width: 1100px; margin: auto; }
+        h1 { text-align: center; margin-bottom: 10px; color: #0d6efd; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 40px; }
+        
+        .wireframe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 30px;
+        }
+        
+        .wf-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .wf-card h3 {
+            background: #212529;
+            color: white;
+            padding: 12px 20px;
+            font-size: 15px;
+        }
+        
+        .wf-content {
+            padding: 20px;
+        }
+        
+        /* Wireframe common styles */
+        .wf { border: 2px dashed #ccc; border-radius: 8px; padding: 10px; font-family: 'Segoe UI', sans-serif; }
+        .wf-header { background: #343a40; color: white; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; }
+        .wf-header .brand { font-weight: bold; color: #0d6efd; }
+        .wf-header .nav { display: flex; gap: 12px; }
+        .wf-header .nav span { color: #aaa; }
+        .wf-hero { background: #e3f2fd; padding: 20px; text-align: center; border-radius: 4px; margin-bottom: 10px; }
+        .wf-hero h2 { font-size: 18px; color: #0d6efd; }
+        .wf-hero p { font-size: 12px; color: #666; }
+        .wf-hero .btn { display: inline-block; background: #0d6efd; color: white; padding: 6px 20px; border-radius: 4px; font-size: 12px; margin-top: 8px; }
+        .wf-categories { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        .wf-cat { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 16px; border-radius: 4px; font-size: 11px; text-align: center; flex: 1; min-width: 60px; }
+        .wf-books { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .wf-book { border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; text-align: center; }
+        .wf-book .img { height: 60px; background: #e9ecef; border-radius: 4px; margin-bottom: 6px; }
+        .wf-book .title { font-size: 11px; font-weight: bold; }
+        .wf-book .price { color: #0d6efd; font-size: 12px; font-weight: bold; }
+        .wf-book .btn-sm { background: #0d6efd; color: white; padding: 3px 10px; border-radius: 3px; font-size: 10px; display: inline-block; margin-top: 4px; }
+
+        /* Login */
+        .wf-login { max-width: 350px; margin: auto; padding: 20px; }
+        .wf-login .card { border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; }
+        .wf-login .card h4 { text-align: center; margin-bottom: 15px; font-size: 16px; }
+        .wf-login .field { margin-bottom: 10px; }
+        .wf-login .field label { font-size: 11px; display: block; margin-bottom: 3px; }
+        .wf-login .field input { width: 100%; padding: 6px 10px; border: 1px solid #dee2e6; border-radius: 4px; font-size: 12px; }
+        .wf-login .btn-primary { background: #0d6efd; color: white; width: 100%; padding: 7px; border: 0; border-radius: 4px; font-size: 13px; }
+
+        /* Admin */
+        .wf-admin-header { background: #343a40; color: white; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; }
+        .wf-admin-header .brand { font-weight: bold; color: #0d6efd; }
+        .wf-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        .wf-stat { padding: 12px; border-radius: 4px; color: white; }
+        .wf-stat h6 { font-size: 11px; margin-bottom: 4px; }
+        .wf-stat .num { font-size: 20px; font-weight: bold; }
+        .wf-stat.primary { background: #0d6efd; }
+        .wf-stat.success { background: #198754; }
+        .wf-stat.warning { background: #ffc107; color: #333; }
+        .wf-stat.info { background: #0dcaf0; }
+        .wf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .wf-table th { background: #f8f9fa; padding: 6px 10px; text-align: left; border-bottom: 2px solid #dee2e6; }
+        .wf-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+        .wf-badge { padding: 2px 8px; border-radius: 10px; font-size: 10px; color: white; }
+        .wf-badge.success { background: #198754; }
+        .wf-badge.warning { background: #ffc107; color: #333; }
+        .wf-badge.danger { background: #dc3545; }
+
+        .shop-layout { display: grid; grid-template-columns: 1fr 3fr; gap: 12px; }
+        .shop-sidebar { border: 1px solid #dee2e6; border-radius: 4px; padding: 12px; }
+        .shop-sidebar h5 { font-size: 13px; margin-bottom: 8px; }
+        .shop-sidebar .field { margin-bottom: 8px; }
+        .shop-sidebar .field input, .shop-sidebar .field select { width: 100%; padding: 4px 8px; border: 1px solid #dee2e6; border-radius: 3px; font-size: 11px; }
+
+        .wf-footer { background: #343a40; color: #aaa; padding: 12px; border-radius: 4px; margin-top: 10px; text-align: center; font-size: 11px; }
+
+        .wf-detail { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; }
+        .wf-detail .img-large { background: #e9ecef; border-radius: 4px; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; }
+        
+        .page-label { position: absolute; top: -8px; right: 10px; background: #0d6efd; color: white; padding: 2px 10px; border-radius: 10px; font-size: 10px; }
+        .wf-card { position: relative; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Wireframes</h1>
+        <p class="subtitle">Online Bookstore - Page Layout Mockups</p>
+
+        <div class="wireframe-grid">
+            <!-- Home Page -->
+            <div class="wf-card">
+                <div class="page-label">Home Page</div>
+                <h3>🏠 Home Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav">
+                                <span>Home</span>
+                                <span>Shop</span>
+                                <span>Cart</span>
+                                <span>Login</span>
+                            </div>
+                        </div>
+                        <div class="wf-hero">
+                            <h2>Welcome to Online BookStore</h2>
+                            <p>Discover thousands of books across every genre.</p>
+                            <div class="btn">Browse Books</div>
+                        </div>
+                        <h5 style="font-size:14px;margin-bottom:8px;">Categories</h5>
+                        <div class="wf-categories">
+                            <div class="wf-cat">📚 Fiction</div>
+                            <div class="wf-cat">📘 Non-Fiction</div>
+                            <div class="wf-cat">🔬 Science</div>
+                            <div class="wf-cat">🏛️ History</div>
+                            <div class="wf-cat">🧙 Fantasy</div>
+                        </div>
+                        <h5 style="font-size:14px;margin-bottom:8px;">Featured Books</h5>
+                        <div class="wf-books">
+                            <div class="wf-book"><div class="img"></div><div class="title">Book Title</div><div class="price">$12.99</div><div class="btn-sm">Details</div></div>
+                            <div class="wf-book"><div class="img"></div><div class="title">Book Title</div><div class="price">$14.99</div><div class="btn-sm">Details</div></div>
+                            <div class="wf-book"><div class="img"></div><div class="title">Book Title</div><div class="price">$11.99</div><div class="btn-sm">Details</div></div>
+                            <div class="wf-book"><div class="img"></div><div class="title">Book Title</div><div class="price">$18.99</div><div class="btn-sm">Details</div></div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore. All rights reserved.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div class="wf-card">
+                <div class="page-label">Login</div>
+                <h3>🔐 Login Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav"><span>Login</span><span>Register</span></div>
+                        </div>
+                        <div class="wf-login">
+                            <div class="card">
+                                <h4>📖 Welcome Back</h4>
+                                <p style="font-size:11px;color:#666;text-align:center;margin-bottom:12px;">Sign in to continue</p>
+                                <div class="field"><label>Email</label><input type="text" placeholder="your@email.com"></div>
+                                <div class="field"><label>Password</label><input type="password" placeholder="••••••"></div>
+                                <div style="text-align:right;font-size:11px;margin-bottom:10px;"><a style="color:#0d6efd;">Forgot Password?</a></div>
+                                <button class="btn-primary">Sign In</button>
+                                <p style="font-size:11px;text-align:center;margin-top:10px;">Don't have an account? <a style="color:#0d6efd;">Register</a></p>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shop Page -->
+            <div class="wf-card">
+                <div class="page-label">Shop</div>
+                <h3>🛒 Shop Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav"><span>Home</span><span>Shop</span><span>Cart</span></div>
+                        </div>
+                        <div class="shop-layout">
+                            <div class="shop-sidebar">
+                                <h5>🔍 Filters</h5>
+                                <div class="field"><label>Search</label><input placeholder="Title or author..."></div>
+                                <div class="field"><label>Category</label><select><option>All Categories</option></select></div>
+                                <div class="field" style="display:flex;gap:5px;">
+                                    <div><label>Min</label><input placeholder="$0" style="width:60px;"></div>
+                                    <div><label>Max</label><input placeholder="$100" style="width:60px;"></div>
+                                </div>
+                                <div class="field"><label>Sort</label><select><option>Newest</option></select></div>
+                            </div>
+                            <div>
+                                <p style="font-size:11px;color:#666;margin-bottom:8px;">Showing 8 of 8 books</p>
+                                <div class="wf-books">
+                                    <div class="wf-book"><div class="img"></div><div class="title">Book</div><div class="price">$12.99</div><div class="btn-sm">Details</div></div>
+                                    <div class="wf-book"><div class="img"></div><div class="title">Book</div><div class="price">$14.99</div><div class="btn-sm">Details</div></div>
+                                    <div class="wf-book"><div class="img"></div><div class="title">Book</div><div class="price">$11.99</div><div class="btn-sm">Details</div></div>
+                                    <div class="wf-book"><div class="img"></div><div class="title">Book</div><div class="price">$9.99</div><div class="btn-sm">Details</div></div>
+                                </div>
+                                <div style="display:flex;justify-content:center;gap:5px;margin-top:10px;">
+                                    <span style="padding:3px 10px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;">‹</span>
+                                    <span style="padding:3px 10px;border:1px solid #0d6efd;background:#0d6efd;color:white;border-radius:3px;font-size:11px;">1</span>
+                                    <span style="padding:3px 10px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;">2</span>
+                                    <span style="padding:3px 10px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;">›</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Page -->
+            <div class="wf-card">
+                <div class="page-label">Cart</div>
+                <h3>🛍️ Cart Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav"><span>Home</span><span>Shop</span><span>Cart</span></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:10px;">
+                            <div style="border:1px solid #dee2e6;border-radius:4px;padding:12px;">
+                                <div style="display:flex;gap:10px;align-items:center;border-bottom:1px solid #eee;padding-bottom:8px;margin-bottom:8px;">
+                                    <div style="width:50px;height:60px;background:#e9ecef;border-radius:4px;"></div>
+                                    <div style="flex:1;"><strong style="font-size:13px;">Book Title</strong><br><span style="font-size:11px;color:#0d6efd;">$12.99</span></div>
+                                    <div><input style="width:50px;padding:3px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;" value="1"></div>
+                                    <div><strong style="font-size:13px;">$12.99</strong></div>
+                                    <div style="color:#dc3545;font-size:16px;">✕</div>
+                                </div>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    <div style="width:50px;height:60px;background:#e9ecef;border-radius:4px;"></div>
+                                    <div style="flex:1;"><strong style="font-size:13px;">Another Book</strong><br><span style="font-size:11px;color:#0d6efd;">$14.99</span></div>
+                                    <div><input style="width:50px;padding:3px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;" value="2"></div>
+                                    <div><strong style="font-size:13px;">$29.98</strong></div>
+                                    <div style="color:#dc3545;font-size:16px;">✕</div>
+                                </div>
+                            </div>
+                            <div style="border:1px solid #dee2e6;border-radius:4px;padding:12px;">
+                                <h5 style="font-size:14px;margin-bottom:8px;">Order Summary</h5>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Subtotal</span><strong>$42.97</strong></div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Shipping</span><span style="color:#198754;">Free</span></div>
+                                <hr style="margin:6px 0;">
+                                <div style="display:flex;justify-content:space-between;font-size:16px;margin-bottom:10px;"><span>Total</span><strong style="color:#0d6efd;">$42.97</strong></div>
+                                <div style="background:#0d6efd;color:white;text-align:center;padding:7px;border-radius:4px;font-size:13px;">Checkout</div>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div class="wf-card">
+                <div class="page-label">Admin</div>
+                <h3>📊 Admin Dashboard</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-admin-header">
+                            <span class="brand">⚡ Admin Panel</span>
+                            <div class="nav"><span>Dashboard</span><span>Books</span><span>Users</span><span>Orders</span><span style="color:#dc3545;">Logout</span></div>
+                        </div>
+                        <h5 style="font-size:14px;margin-bottom:10px;">Dashboard Overview</h5>
+                        <div class="wf-stats">
+                            <div class="wf-stat primary"><h6>Total Users</h6><div class="num">24</div></div>
+                            <div class="wf-stat success"><h6>Total Books</h6><div class="num">42</div></div>
+                            <div class="wf-stat warning"><h6>Total Orders</h6><div class="num">18</div></div>
+                            <div class="wf-stat info"><h6>Revenue</h6><div class="num">$1,250</div></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div style="border:1px solid #dee2e6;border-radius:4px;">
+                                <div style="background:#f8f9fa;padding:6px 10px;font-size:12px;font-weight:bold;border-bottom:1px solid #dee2e6;">Recent Orders</div>
+                                <table class="wf-table">
+                                    <tr><th>#</th><th>Customer</th><th>Total</th><th>Status</th></tr>
+                                    <tr><td>#1</td><td>John</td><td>$42.97</td><td><span class="wf-badge warning">Pending</span></td></tr>
+                                    <tr><td>#2</td><td>Jane</td><td>$29.98</td><td><span class="wf-badge success">Delivered</span></td></tr>
+                                </table>
+                            </div>
+                            <div style="border:1px solid #dee2e6;border-radius:4px;">
+                                <div style="background:#f8f9fa;padding:6px 10px;font-size:12px;font-weight:bold;border-bottom:1px solid #dee2e6;">Recent Users</div>
+                                <table class="wf-table">
+                                    <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+                                    <tr><td>Admin</td><td>admin@test.com</td><td><span class="wf-badge danger">Admin</span></td></tr>
+                                    <tr><td>John</td><td>john@test.com</td><td><span class="wf-badge" style="background:#6c757d;">User</span></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Admin Panel</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Details -->
+            <div class="wf-card">
+                <div class="page-label">Details</div>
+                <h3>📖 Book Details Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav"><span>Home</span><span>Shop</span><span>Cart</span></div>
+                        </div>
+                        <div style="font-size:11px;margin:8px 0;color:#666;">Shop &gt; Book Title</div>
+                        <div class="wf-detail">
+                            <div class="img-large">📕 Book Cover</div>
+                            <div>
+                                <h3 style="font-size:18px;">The Great Gatsby</h3>
+                                <p style="font-size:12px;color:#666;">by F. Scott Fitzgerald</p>
+                                <div style="margin:8px 0;"><span style="background:#0dcaf0;padding:2px 8px;border-radius:10px;font-size:10px;color:white;">Fiction</span> <span style="background:#198754;padding:2px 8px;border-radius:10px;font-size:10px;color:white;">In Stock</span></div>
+                                <h2 style="color:#0d6efd;font-size:24px;">$12.99</h2>
+                                <p style="font-size:11px;color:#666;margin:8px 0;">A story of the mysteriously wealthy Jay Gatsby...</p>
+                                <div style="display:flex;gap:8px;align-items:center;margin-top:12px;">
+                                    <label style="font-size:11px;">Qty:</label>
+                                    <input style="width:60px;padding:4px;border:1px solid #dee2e6;border-radius:3px;" value="1">
+                                    <div style="background:#0d6efd;color:white;padding:8px 20px;border-radius:4px;font-size:13px;">Add to Cart</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="wf-card">
+                <div class="page-label">Profile</div>
+                <h3>👤 Profile Page</h3>
+                <div class="wf-content">
+                    <div class="wf">
+                        <div class="wf-header">
+                            <span class="brand">📚 BookStore</span>
+                            <div class="nav"><span>Hi, User</span><span>Logout</span></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 3fr;gap:12px;margin-top:10px;">
+                            <div style="border:1px solid #dee2e6;border-radius:4px;padding:15px;text-align:center;">
+                                <div style="width:80px;height:80px;background:#e9ecef;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;">Photo</div>
+                                <strong style="font-size:13px;">John Doe</strong>
+                                <p style="font-size:11px;color:#666;">john@email.com</p>
+                                <hr style="margin:8px 0;">
+                                <div style="font-size:11px;"><a style="display:block;padding:4px;color:#0d6efd;">👤 Profile</a><a style="display:block;padding:4px;color:#0d6efd;">📦 Orders</a><a style="display:block;padding:4px;color:#0d6efd;">🔒 Password</a></div>
+                            </div>
+                            <div style="border:1px solid #dee2e6;border-radius:4px;padding:15px;">
+                                <h5 style="font-size:14px;margin-bottom:12px;">Edit Profile</h5>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                    <div><label style="font-size:11px;">Username</label><input style="width:100%;padding:5px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;" value="John Doe"></div>
+                                    <div><label style="font-size:11px;">Email</label><input style="width:100%;padding:5px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;" value="john@email.com" disabled></div>
+                                </div>
+                                <div style="margin-top:8px;"><label style="font-size:11px;">Phone</label><input style="width:100%;padding:5px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;"></div>
+                                <div style="margin-top:8px;"><label style="font-size:11px;">Address</label><textarea style="width:100%;padding:5px;border:1px solid #dee2e6;border-radius:3px;font-size:11px;height:50px;"></textarea></div>
+                                <div style="background:#0d6efd;color:white;display:inline-block;padding:6px 16px;border-radius:4px;font-size:12px;margin-top:8px;">Update</div>
+                            </div>
+                        </div>
+                        <div class="wf-footer">© 2024 Online Bookstore</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

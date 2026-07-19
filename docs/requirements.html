@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Requirements - Online Bookstore</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 40px; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #0d6efd; border-bottom: 3px solid #0d6efd; padding-bottom: 10px; }
+        h2 { color: #212529; margin-top: 30px; border-bottom: 1px solid #dee2e6; padding-bottom: 8px; }
+        h3 { color: #0d6efd; margin-top: 20px; }
+        .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .meta div { font-size: 14px; }
+        .meta strong { display: inline-block; width: 120px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 6px; line-height: 1.6; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; color: white; margin-right: 5px; }
+        .badge.red { background: #dc3545; }
+        .badge.green { background: #198754; }
+        .badge.blue { background: #0d6efd; }
+        .badge.orange { background: #fd7e14; }
+        .table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .table th { background: #212529; color: white; padding: 8px 12px; text-align: left; font-size: 13px; }
+        .table td { padding: 8px 12px; border-bottom: 1px solid #dee2e6; font-size: 13px; }
+        .table tr:nth-child(even) { background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Software Requirements Specification</h1>
+        <p style="color:#666;">Online Bookstore - Full Stack Web Application</p>
+
+        <div class="meta">
+            <div><strong>Project:</strong> Online Bookstore</div>
+            <div><strong>Version:</strong> 1.0.0</div>
+            <div><strong>Technology:</strong> PHP 8+, MySQL, Bootstrap 5</div>
+            <div><strong>Status:</strong> Complete</div>
+        </div>
+
+        <h2>1. Introduction</h2>
+        <h3>1.1 Purpose</h3>
+        <p>To build a fully functional online bookstore where users can browse, search, and purchase books, and administrators can manage the entire system.</p>
+
+        <h3>1.2 Scope</h3>
+        <p>The system provides user registration/authentication, book catalog with search/filter, shopping cart, order processing, admin dashboard with analytics, and full CRUD operations for all modules.</p>
+
+        <h2>2. Functional Requirements</h2>
+
+        <h3>2.1 Authentication Module</h3>
+        <ul>
+            <li><span class="badge green">FR-01</span> User shall be able to register with username, email, and password</li>
+            <li><span class="badge green">FR-02</span> User shall be able to login with email and password</li>
+            <li><span class="badge green">FR-03</span> System shall hash passwords using password_hash()</li>
+            <li><span class="badge green">FR-04</span> System shall maintain user sessions</li>
+            <li><span class="badge green">FR-05</span> System shall support forgot/reset password flow</li>
+            <li><span class="badge green">FR-06</span> System shall implement role-based access (Admin/User)</li>
+        </ul>
+
+        <h3>2.2 Admin Module</h3>
+        <ul>
+            <li><span class="badge green">FR-07</span> Admin shall view dashboard with total users, books, orders, revenue</li>
+            <li><span class="badge green">FR-08</span> Admin shall manage books (Create, Read, Update, Delete)</li>
+            <li><span class="badge green">FR-09</span> Admin shall manage categories (CRUD)</li>
+            <li><span class="badge green">FR-10</span> Admin shall manage users (CRUD, role toggle)</li>
+            <li><span class="badge green">FR-11</span> Admin shall manage orders (CRUD, status update)</li>
+            <li><span class="badge green">FR-12</span> Admin shall search and filter data</li>
+        </ul>
+
+        <h3>2.3 User Module</h3>
+        <ul>
+            <li><span class="badge green">FR-13</span> User shall browse books with search and filters</li>
+            <li><span class="badge green">FR-14</span> User shall view book details</li>
+            <li><span class="badge green">FR-15</span> User shall add/remove books from cart</li>
+            <li><span class="badge green">FR-16</span> User shall place orders</li>
+            <li><span class="badge green">FR-17</span> User shall view order history</li>
+            <li><span class="badge green">FR-18</span> User shall update profile with picture upload</li>
+        </ul>
+
+        <h3>2.4 Shopping Module</h3>
+        <ul>
+            <li><span class="badge green">FR-19</span> System shall support search by title/author</li>
+            <li><span class="badge green">FR-20</span> System shall filter by category</li>
+            <li><span class="badge green">FR-21</span> System shall filter by price range</li>
+            <li><span class="badge green">FR-22</span> System shall sort books</li>
+            <li><span class="badge green">FR-23</span> System shall implement pagination</li>
+            <li><span class="badge green">FR-24</span> System shall manage stock inventory</li>
+        </ul>
+
+        <h2>3. Non-Functional Requirements</h2>
+        <ul>
+            <li><span class="badge blue">NFR-01</span> System shall use prepared statements to prevent SQL injection</li>
+            <li><span class="badge blue">NFR-02</span> System shall use htmlspecialchars() to prevent XSS</li>
+            <li><span class="badge blue">NFR-03</span> System shall validate all inputs server-side</li>
+            <li><span class="badge blue">NFR-04</span> System shall be responsive (Bootstrap 5)</li>
+            <li><span class="badge blue">NFR-05</span> System shall run on XAMPP without additional configuration</li>
+            <li><span class="badge blue">NFR-06</span> System shall have a normalized database with foreign keys</li>
+            <li><span class="badge blue">NFR-07</span> System shall use Bootstrap confirmation modals before deletion</li>
+        </ul>
+
+        <h2>4. Database Requirements</h2>
+        <table class="table">
+            <tr><th>Table</th><th>Description</th><th>Key Constraints</th></tr>
+            <tr><td>roles</td><td>User roles</td><td>PRIMARY KEY (id)</td></tr>
+            <tr><td>users</td><td>User accounts</td><td>PK (id), FK (role_id), UNIQUE (email, username)</td></tr>
+            <tr><td>categories</td><td>Book categories</td><td>PK (id), UNIQUE (name)</td></tr>
+            <tr><td>books</td><td>Book inventory</td><td>PK (id), FK (category_id), INDEXES (title, author, price)</td></tr>
+            <tr><td>cart</td><td>Shopping cart</td><td>PK (id), FK (user_id, book_id)</td></tr>
+            <tr><td>orders</td><td>Order records</td><td>PK (id), FK (user_id), INDEX (status, order_date)</td></tr>
+            <tr><td>order_items</td><td>Order line items</td><td>PK (id), FK (order_id, book_id)</td></tr>
+        </table>
+
+        <h2>5. Technology Stack</h2>
+        <table class="table">
+            <tr><th>Layer</th><th>Technology</th></tr>
+            <tr><td>Frontend</td><td>HTML5, CSS3, Bootstrap 5, JavaScript</td></tr>
+            <tr><td>Backend</td><td>PHP 8+ (mysqli)</td></tr>
+            <tr><td>Database</td><td>MySQL</td></tr>
+            <tr><td>Web Server</td><td>Apache (XAMPP)</td></tr>
+        </table>
+
+        <h2>6. Deliverables</h2>
+        <ul>
+            <li>Complete source code (PHP, HTML, CSS, JS)</li>
+            <li>SQL database schema with seed data</li>
+            <li>Admin panel with analytics dashboard</li>
+            <li>Authentication system with role-based access</li>
+            <li>Full CRUD for all modules</li>
+            <li>Search, filters, and pagination</li>
+            <li>Responsive UI (Bootstrap 5)</li>
+            <li>README with installation guide</li>
+            <li>ER diagram and wireframes</li>
+        </ul>
+    </div>
+</body>
+</html>
