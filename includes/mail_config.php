@@ -20,11 +20,11 @@
  *   Check your control panel for SMTP details
  */
 
-define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_HOST', '');
 define('SMTP_PORT', 587);
-define('SMTP_USER', '');        // Set your email
-define('SMTP_PASS', '');        // Set your app password
-define('SMTP_FROM', '');        // From email address
+define('SMTP_USER', '');
+define('SMTP_PASS', '');
+define('SMTP_FROM', '');
 define('SMTP_FROM_NAME', 'Online Bookstore');
 
 /**
@@ -38,18 +38,20 @@ function sendMail($to, $subject, $body) {
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
 
     try {
-        if (empty(SMTP_USER) || empty(SMTP_PASS)) {
-            return true;
+        if (!empty(SMTP_USER) && !empty(SMTP_PASS)) {
+            $mail->isSMTP();
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = SMTP_PORT;
+        } else {
+            $mail->isMail();
         }
-        $mail->isSMTP();
-        $mail->Host       = SMTP_HOST;
-        $mail->SMTPAuth   = true;
-        $mail->Username   = SMTP_USER;
-        $mail->Password   = SMTP_PASS;
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = SMTP_PORT;
 
-        $mail->setFrom(SMTP_FROM ?: 'noreply@bookstore.com', SMTP_FROM_NAME);
+        $from = SMTP_FROM ?: 'noreply@bookstore.com';
+        $mail->setFrom($from, SMTP_FROM_NAME);
         $mail->addAddress($to);
         $mail->isHTML(true);
         $mail->Subject = $subject;
