@@ -1,16 +1,16 @@
 <?php
 // Database Configuration
-// Local (XAMPP):
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'online_bookstore');
+// Local (XAMPP) — comment out when deploying:
+// define('DB_HOST', 'localhost');
+// define('DB_USER', 'root');
+// define('DB_PASS', '');
+// define('DB_NAME', 'online_bookstore');
 
-// Production (InfinityFree) — uncomment and fill after creating DB:
-// define('DB_HOST', 'sqlXXX.infinityfree.com');
-// define('DB_USER', 'if0_XXXXXX');
-// define('DB_PASS', 'your_db_password');
-// define('DB_NAME', 'if0_XXXXXX_online_bookstore');
+// Production (InfinityFree):
+define('DB_HOST', 'sql211.infinityfree.com');
+define('DB_USER', 'if0_42444207');
+define('DB_PASS', 'bJZ2ZndL5Gsc');
+define('DB_NAME', 'if0_42444207_onlinebookstore');
 
 // Base URL
 $base = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/';
